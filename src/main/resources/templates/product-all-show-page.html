@@ -1,0 +1,22 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<table>
+		<tr th:each="tempPr: ${mydata}">
+			<td th:text="${tempPr.getId()}"></td>
+			<td th:text="${tempPr.getTitle()}"></td>
+			<td th:text="${tempPr.getDescription()}"></td>
+			<td th:text="${tempPr.getPrice()}"></td>
+			<td th:text="${tempPr.getQuantity()}"></td>
+
+		</tr>
+
+	</table>
+
+
+
+</body>
+
+
+</html>
