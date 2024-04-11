@@ -3,6 +3,7 @@ package lv.venta.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lv.venta.model.Product;
+import lv.venta.service.ICRUDProductService;
+import lv.venta.service.IFilterProductService;
 
 @Controller
 public class FirstController {
@@ -25,6 +28,18 @@ public class FirstController {
 			Arrays.asList(tempProduct1, tempProduct2, tempProduct3));
 	
 	*/
+	
+	
+	
+	@Autowired
+	private ICRUDProductService crudService;
+	
+	@Autowired
+	private IFilterProductService filterService;
+	
+	
+	
+	
 
 	@GetMapping("/hello")//localhost:8080/hello
 	public String getHello() {
@@ -42,39 +57,39 @@ public class FirstController {
 	
 	@GetMapping("/product/test")//localhost:8080/product/test
 	public String getProductTest(Model model) {
-		Product tempProduct = new Product("Abols", "Sarkans", 0.99f, 5);
-		model.addAttribute("mydata", tempProduct);
+		try {
+		model.addAttribute("mydata", crudService.retrieveById(1));
 		return "product-one-show-page";//tiek parādīta product-one-show-page.html lapa
+		}
+		catch(Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";//tiek paradita error page
+		}
 	}
 	
 
 	@GetMapping("/product/all") //localhost:8080/product/all
 	public String getProductAll(Model model) {
-		model.addAttribute("mydata", allProducts);
+		try {
+		model.addAttribute("mydata", crudService.retrieveAll());
 		return "product-all-show-page";//tiek parādīta product-all-show-page.html lapa
+		}
+		catch(Exception e){
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";//tiek paradita error page
+		}
 	}
-	
-	
-	
 	
 	
 	
 	@GetMapping("/product/one") //localhost:8080/product/one?id=5
 	public String getProductOneId(@RequestParam("id")int id, Model model) {
-		if(id > 0)
-		{
-			for(Product tempP: allProducts) {
-				if(tempP.getId() == id) {
-					model.addAttribute("mydata", tempP);
-					return "product-one-show-page";//tiek paradita html lapa
-				}
-			}
-			model.addAttribute("errormsg", "Product is not found");
-			return "error-page";//tiek paradita error page
+		try {
+		model.addAttribute("mydata", crudService.retrieveById(id));
+		return "product-one-show-page";//tiek paradita html lapa
 		}
-		else
-		{
-			model.addAttribute("errormsg", "Id should be positive");
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
 			return "error-page";//tiek paradita error page
 		}
 	}
@@ -84,22 +99,14 @@ public class FirstController {
 	
 	@GetMapping("/product/all/{id}") //localhost:8080/product/all/2
 	public String getProductAllId(@PathVariable("id")int id, Model model) {
-		if(id > 0)
-		{
-			for(Product tempP: allProducts) {
-				if(tempP.getId() == id) {
-					model.addAttribute("mydata", tempP);
-					return "product-one-show-page";//tiek paradita html lapa
-				}
+		try {
+			model.addAttribute("mydata", crudService.retrieveById(id));
+			return "product-one-show-page";//tiek paradita html lapa
 			}
-			model.addAttribute("errormsg", "Product is not found");
-			return "error-page";//tiek paradita error page
-		}
-		else
-		{
-			model.addAttribute("errormsg", "Id should be positive");
-			return "error-page";//tiek paradita error page
-		}
+			catch (Exception e) {
+				model.addAttribute("errormsg", e.getMessage());
+				return "error-page";//tiek paradita error page
+			}
 	}
 	
 	
