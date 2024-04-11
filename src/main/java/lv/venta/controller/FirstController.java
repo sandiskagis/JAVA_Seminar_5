@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lv.venta.model.Product;
@@ -107,6 +108,35 @@ public class FirstController {
 				model.addAttribute("errormsg", e.getMessage());
 				return "error-page";//tiek paradita error page
 			}
+	}
+	
+	
+	
+	
+	@GetMapping("/product/insert") //localhost:8080/product/insert
+	public String getProductInsert(Model model) {
+		model.addAttribute("product", new Product());//noklusējuma produkts tiks padots uz lapu
+		return "product-insert-page";//tiek parādīta product-insert-page.html lapa
+		
+	}
+	//TODO izveidot HTML lapu
+	@PostMapping("/product/insert")
+	public String postProductInsert(Product product) { //iegūstam aizpildītu produktu
+		try {
+			System.out.println(product);
+		crudService.create(product.getTitle(), product.getDescription(), product.getPrice(), product.getQuantity());
+		return "redirect:/product/all"; // tiks pārvirzīts uz localhost:8080/error
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/error";//tiks pārvirzīts uz localhost:8080/error
+		
+	}
+	
+	@GetMapping("/error")//localhost:8080/error
+	public String getError() {
+		return "error-page";
 	}
 	
 	

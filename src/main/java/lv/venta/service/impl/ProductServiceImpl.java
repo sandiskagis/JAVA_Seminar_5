@@ -36,6 +36,7 @@ public class ProductServiceImpl implements ICRUDProductService, IFilterProductSe
 		
 		//ja tāds produkts neeksistē, tad izveidojam jaunu
 		Product newProduct = new Product(title, description, price, quantity);
+		allProducts.add(newProduct);
 		return newProduct;
 		
 		
