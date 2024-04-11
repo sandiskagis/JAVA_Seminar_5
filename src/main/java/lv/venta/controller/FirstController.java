@@ -6,11 +6,13 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.validation.Valid;
 import lv.venta.model.Product;
 import lv.venta.service.ICRUDProductService;
 import lv.venta.service.IFilterProductService;
@@ -121,16 +123,22 @@ public class FirstController {
 	}
 	//TODO izveidot HTML lapu
 	@PostMapping("/product/insert")
-	public String postProductInsert(Product product) { //iegūstam aizpildītu produktu
-		try {
-			System.out.println(product);
-		crudService.create(product.getTitle(), product.getDescription(), product.getPrice(), product.getQuantity());
-		return "redirect:/product/all"; // tiks pārvirzīts uz localhost:8080/error
+	public String postProductInsert(@Valid Product product, BindingResult result) { //iegūstam aizpildītu produktu
+		//saja gadijuma ir validaciju parkapumi Product objektam
+		if(result.hasErrors()) {
+			return "product-insert-page";//paliekam saja pasa lapa
 		}
-		catch(Exception e) {
-			e.printStackTrace();
+		else {
+			try {
+				System.out.println(product);
+				crudService.create(product.getTitle(), product.getDescription(), product.getPrice(),
+						product.getQuantity());
+				return "redirect:/product/all"; // tiks pārvirzīts uz localhost:8080/error
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "redirect:/error";// tiks pārvirzīts uz localhost:8080/error
 		}
-		return "redirect:/error";//tiks pārvirzīts uz localhost:8080/error
 		
 	}
 	
