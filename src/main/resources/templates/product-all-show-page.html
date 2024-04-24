@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-
+	<p th:text="${msg}"></p>
 	<table>
 		<tr th:each="tempPr: ${mydata}">
 			<td th:text="${tempPr.getId()}"></td>

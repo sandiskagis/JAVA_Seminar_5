@@ -19,127 +19,106 @@ import lv.venta.service.IFilterProductService;
 
 @Controller
 public class FirstController {
-	
-	
-	/*
-	
-	private Product tempProduct1 = new Product("Abols", "Sarkans", 0.99f, 5);
-	private Product tempProduct2 = new Product("Zemene", "Salda", 1.99f, 50);
-	private Product tempProduct3 = new Product("Burkans", "Oranžš", 0.39f, 500);
-		
-	ArrayList<Product> allProducts = new ArrayList<>(
-			Arrays.asList(tempProduct1, tempProduct2, tempProduct3));
-	
-	*/
-	
-	
-	
+
 	@Autowired
 	private ICRUDProductService crudService;
-	
+
 	@Autowired
 	private IFilterProductService filterService;
-	
-	
-	
-	
 
-	@GetMapping("/hello")//localhost:8080/hello
+	@GetMapping("/hello") // localhost:8080/hello
 	public String getHello() {
 		System.out.println("First Controller!!!");
-		return "hello-page"; //tiek parādīta hello-page.html lapa
-		
+		return "hello-page"; // tiek parādīta hello-page.html lapa
+
 	}
-	
-	@GetMapping("/hello/msg")//localhost:8080/hello/msg
+
+	@GetMapping("/hello/msg") // localhost:8080/hello/msg
 	public String getHelloMsg(Model model) {
 		System.out.println("Msg controller is called");
 		model.addAttribute("mydata", "Ziņa no JAVA Spring!!!!");
-		return "hello-msg-page";//tiek parādīta hello-msg-page.html lapa
+		return "hello-msg-page";// tiek parādīta hello-msg-page.html lapa
 	}
-	
-	@GetMapping("/product/test")//localhost:8080/product/test
+
+	@GetMapping("/product/test") // localhost:8080/product/test
 	public String getProductTest(Model model) {
 		try {
-		model.addAttribute("mydata", crudService.retrieveById(1));
-		return "product-one-show-page";//tiek parādīta product-one-show-page.html lapa
-		}
-		catch(Exception e) {
+			model.addAttribute("mydata", crudService.retrieveById(1));
+			return "product-one-show-page";// tiek parādīta product-one-show-page.html lapa
+		} catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
-			return "error-page";//tiek paradita error page
+			return "error-page";// tiek parādīta error-page.html lapa
 		}
 	}
-	
 
-	@GetMapping("/product/all") //localhost:8080/product/all
+	@GetMapping("/product/all") // localhost:8080/product/all
 	public String getProductAll(Model model) {
+
 		try {
-		model.addAttribute("mydata", crudService.retrieveAll());
-		return "product-all-show-page";//tiek parādīta product-all-show-page.html lapa
-		}
-		catch(Exception e){
-			model.addAttribute("errormsg", e.getMessage());
-			return "error-page";//tiek paradita error page
-		}
-	}
-	
-	
-	
-	@GetMapping("/product/one") //localhost:8080/product/one?id=5
-	public String getProductOneId(@RequestParam("id")int id, Model model) {
-		try {
-		model.addAttribute("mydata", crudService.retrieveById(id));
-		return "product-one-show-page";//tiek paradita html lapa
+			model.addAttribute("mydata", crudService.retrieveAll());
+			model.addAttribute("msg", "All products");
+			return "product-all-show-page";// tiek parādīta product-all-show-page.html lapa
 		}
 		catch (Exception e) {
 			model.addAttribute("errormsg", e.getMessage());
-			return "error-page";//tiek paradita error page
+			return "error-page";// tiek parādīta error-page.html lapa
 		}
 	}
-	
-	
-	
-	
-	@GetMapping("/product/all/{id}") //localhost:8080/product/all/2
-	public String getProductAllId(@PathVariable("id")int id, Model model) {
-		try {
+
+	@GetMapping("/product/one") // localhost:8080/product/one?id=2
+	public String getProductOneId(@RequestParam("id") int id, Model model) {
+		try
+		{
 			model.addAttribute("mydata", crudService.retrieveById(id));
-			return "product-one-show-page";//tiek paradita html lapa
-			}
-			catch (Exception e) {
-				model.addAttribute("errormsg", e.getMessage());
-				return "error-page";//tiek paradita error page
-			}
+			return "product-one-show-page";// tiek parādīta product-one-show-page.html lapa
+		}
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+
 	}
-	
-	
+
+	@GetMapping("/product/all/{id}") // localhost:8080/product/all/2
+	public String getProductAllId(@PathVariable("id") int id, Model model) {
+		try
+		{
+			model.addAttribute("mydata", crudService.retrieveById(id));
+			return "product-one-show-page";// tiek parādīta product-one-show-page.html lapa
+		}
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+	}
 	
 	
 	@GetMapping("/product/insert") //localhost:8080/product/insert
 	public String getProductInsert(Model model) {
 		model.addAttribute("product", new Product());//noklusējuma produkts tiks padots uz lapu
 		return "product-insert-page";//tiek parādīta product-insert-page.html lapa
-		
 	}
-	//TODO izveidot HTML lapu
+	
+	//TODO izveidosim html lapu
+	
 	@PostMapping("/product/insert")
-	public String postProductInsert(@Valid Product product, BindingResult result) { //iegūstam aizpildītu produktu
-		//saja gadijuma ir validaciju parkapumi Product objektam
+	public String postProductInsert(@Valid Product product, BindingResult result) {//iegūstam aju aizpildītu produktu
+		//sajā gadījumā ir validāciju pāŗkāpumi Product objektam
 		if(result.hasErrors()) {
-			return "product-insert-page";//paliekam saja pasa lapa
+			return "product-insert-page";//paliekam šajā pašā lapā
 		}
-		else {
+		else
+		{
 			try {
-				System.out.println(product);
-				crudService.create(product.getTitle(), product.getDescription(), product.getPrice(),
-						product.getQuantity());
-				return "redirect:/product/all"; // tiks pārvirzīts uz localhost:8080/error
+				crudService.create(product.getTitle(), product.getDescription(), 
+					product.getPrice(), product.getQuantity());
+				return "redirect:/product/all";//tiks pārvirzīts jeb izsaukts localhost:8080/product/all
 			} catch (Exception e) {
-				e.printStackTrace();
+			
+				return "redirect:/error";//tiks pārvirzīts jeb izsaukt loclahost:8080/error
 			}
-			return "redirect:/error";// tiks pārvirzīts uz localhost:8080/error
 		}
-		
+	
 	}
 	
 	@GetMapping("/error")//localhost:8080/error
@@ -163,6 +142,8 @@ public class FirstController {
 		}
 		
 	}
+	
+	
 	
 	@PostMapping("/product/update")
 	public String postProductUpdateById(@Valid Product product, 
@@ -207,13 +188,85 @@ public class FirstController {
 		
 	}
 	
+		
+	//TODO pameģinam ielikt atsevisķu nosaukumu html- kas tie ir pa produktiem
+	//un caur model nosūtīt so nosaukumu
+	//izveidojam 4 get kontrolierus prieks filtrācijas funkcijām
+	@GetMapping("/product/filter/price/{threshold}")//localhost:8080/product/filter/price/1.5
+	public String getProductFilterByPrice(@PathVariable("threshold") float threshold,
+			Model model) {
+		
+		try
+		{
+			ArrayList<Product> filterProducts 
+			= filterService.filterByPriceLessThanThreshold(threshold);
+			model.addAttribute("mydata", filterProducts);
+			model.addAttribute("msg", "Products filtered by price: " + threshold + " eur");
+			return "product-all-show-page";// tiek parādīta product-all-show-page.html lapa
+
+		}
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+	
+	}
 	
 	
 	
+	//TODO uztaisām kontrolierus visām pārējām filterService funkcijām un notetsējam
+	@GetMapping("/product/filter/quantity/{threshold}")//localhost:8080/product/filter/quantity/20
+	public String getProductFilterByQuantity(@PathVariable("threshold") int threshold,
+			Model model) {
+		
+		try
+		{
+			ArrayList<Product> filterProducts 
+			= filterService.filterByQuantityLessThanThreshold(threshold);
+			model.addAttribute("mydata", filterProducts);
+			model.addAttribute("msg", "Products filtered by quantity: " + threshold );
+			return "product-all-show-page";// tiek parādīta product-all-show-page.html lapa
+
+		}
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+	
+	}
+	
+	@GetMapping("/product/filter/text/{text}")//localhost:8080/product/filter/text/Sarkans
+	public String getProductFilterByText(@PathVariable("text") String text,
+			Model model) {
+		
+		try
+		{
+			ArrayList<Product> filterProducts 
+			= filterService.filterByTitleOrDescription(text);
+			model.addAttribute("mydata", filterProducts);
+			model.addAttribute("msg", "Products filtered by text: " + text );
+			return "product-all-show-page";// tiek parādīta product-all-show-page.html lapa
+
+		}
+		catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+	
+	}
 	
 	
-	
-	
+	@GetMapping("/product/calculate/total")//localhost:8080/product/calculate/total
+	public String getProductCaluclateTotal(Model model) {
+		try {
+			float result = filterService.calculateProductsTotalValue();
+			model.addAttribute("mydata", "Total value of all products is " + result + " eur");
+			return "hello-msg-page";// tiek parādīta hello-msg-page.html lapa
+		} catch (Exception e) {
+			model.addAttribute("errormsg", e.getMessage());
+			return "error-page";// tiek parādīta error-page.html lapa
+		}
+	}
 	
 	
 	
