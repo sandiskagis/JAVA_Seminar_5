@@ -19,7 +19,7 @@ public interface IProductRepo extends CrudRepository<Product, Integer>{
 	ArrayList<Product> findByTitleContainingOrDescriptionContaining(String text, String text2);
 	
 	
-	@Query(nativeQuery = true, name = "SELECT SUM(PRICE * QUANTITY) FROM PRODUCT_TABLE;")
+	@Query(nativeQuery = true, value = "SELECT SUM(PRICE * QUANTITY) FROM PRODUCT_TABLE;")
 	float calculateTotalValueFromDB();
 
 }
