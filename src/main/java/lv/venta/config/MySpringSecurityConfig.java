@@ -56,9 +56,13 @@ public class MySpringSecurityConfig {
 				.requestMatchers("/product/update**").hasAuthority("ADMIN")
 				.requestMatchers("/product/delete/**").hasAuthority("ADMIN")
 				.requestMatchers("/product/filter/**").hasAnyAuthority("USER", "ADMIN")
-				);
+				);//.exceptionHandling(exp->exp.accessDeniedPage("/access-denied"));
 		
-		http.formLogin().permitAll();
+		//http.exceptionHandling(exp->exp.accessDeniedPage("/access-denied"));//nosaka, uz kuru url adresi japārlec
+		http.csrf(csrf->csrf.disable());
+		http.headers(frame->frame.frameOptions(option->option.disable()));
+				
+		http.formLogin(form -> form.permitAll());
 		
 		
 		return http.build();
